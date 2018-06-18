@@ -71,6 +71,17 @@ export default connection => {
           })
         })
       })
+    },
+    remove: (id) => {
+      return new Promise((resolve, reject) => {
+        connection.query(`DELETE FROM ${table} WHERE pro_id = ${id}`, (error, results) => {
+          if (error) {
+            reject(error)
+          }
+
+          resolve({ message: 'Produto removido com sucesso!', affectedRows: results.affectedRows })
+        })
+      })
     }
   }
 }

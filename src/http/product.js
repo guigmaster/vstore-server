@@ -30,4 +30,13 @@ router.put('/:id', async (req, res) => {
   }
 })
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const products = await db.product.remove(Number(req.params.id))
+    res.status(200).json(products)
+  } catch (error) {
+    res.send(error)
+  }
+})
+
 export default router
