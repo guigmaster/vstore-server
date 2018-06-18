@@ -8,6 +8,29 @@ const fields = [
   'pro_quantity'
 ]
 
+const getSqlFieldsValues = params => {
+  let insertedField = []
+  let insertedBind = []
+  let insertedValue = []
+  let updateField = []
+
+  Object.keys(params).forEach((key) => {
+    if (fields.includes(key)) {
+      insertedField.push(key)
+      insertedBind.push('?')
+      insertedValue.push(params[key])
+      updateField.push(` ${key} = ? `)
+    }
+  })
+
+  return {
+    insertedField,
+    insertedBind,
+    insertedValue,
+    updateField
+  }
+}
+
 export default connection => {
   return {
     all: () => {
@@ -22,26 +45,30 @@ export default connection => {
     },
     create: (params) => {
       return new Promise((resolve, reject) => {
-        let insertedField = []
-        let insertedBind = []
-        let insertedValue = []
-
-        Object.keys(params).forEach((key) => {
-          console.log(fields)
-          if (fields.includes(key)) {
-            insertedField.push(key)
-            insertedBind.push('?')
-            insertedValue.push(params[key])
-          }
-        })
+        const { insertedField, insertedBind, insertedValue } = getSqlFieldsValues(params)
 
         connection.query(`INSERT INTO ${table} (${insertedField.join(', ')}) VALUES(${insertedBind.join(', ')})`, insertedValue, (error, results) => {
           if (error) {
             reject(error)
           }
-          console.log(results)
 
           resolve({ product: Object.assign({}, params, { pro_id: results.insertId }) })
+        })
+      })
+    },
+    update: (id, params) => {
+      return new Promise((resolve, reject) => {
+        const { updateField, insertedValue } = getSqlFieldsValues(params)
+
+        connection.query(`UPDATE ${table} SET ${updateField.join(', ')} WHERE pro_id = ${id}`, insertedValue, (error, results) => {
+          if (error) {
+            reject(error)
+          }
+
+          resolve({
+            product: Object.assign({}, params, { pro_id: id }),
+            affectedRows: results.affectedRows
+          })
         })
       })
     }
