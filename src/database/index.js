@@ -1,4 +1,5 @@
 import mysql from 'mysql'
+import productModel from './model/product'
 
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -8,4 +9,6 @@ const connection = mysql.createConnection({
   database: process.env.DB_DATABASE
 })
 
-export default connection
+export default {
+  product: productModel(connection)
+}
