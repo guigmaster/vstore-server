@@ -2,7 +2,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 
-import httpRoutes from './http/routes'
+require('dotenv').config()
 
 // Create new instance of Express
 const app = express()

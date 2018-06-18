@@ -3,8 +3,6 @@ import app from './app'
 
 import { normalizePort, onError, onListening } from './utils/utils'
 
-require('dotenv').config()
-
 const server = http.createServer(app)
 const port = normalizePort(process.env.PORT || 3000)
 
