@@ -2,7 +2,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 
-import httpRoutes from './http/routes'
+require('dotenv').config()
 
 // Create new instance of Express
 const app = express()
@@ -17,6 +17,6 @@ app.use(corsMiddleware)
 app.options('*', corsMiddleware)
 
 // config API routes
-httpRoutes(app)
+require('./http/routes')(app)
 
 export default app
