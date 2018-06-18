@@ -1,8 +1,5 @@
-const http = require('http')
-const express = require('express')
-
-// Create new instance of Express
-const app = express()
+import http from 'http'
+import app from './app'
 
 const server = http.createServer(app)
 const port = process.env.PORT || 3000
