@@ -1,0 +1,25 @@
+{
+  "name": "vstore-server",
+  "description": "A nodejs server restfull api for vstore",
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "private": true,
+  "author": "Guilherme Silva <guisilva.master@gmail.com>",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/vstore/vstore-server.git"
+  },
+  "keywords": [
+    "vstore",
+    "api",
+    "server",
+    "restfull"
+  ],
+  "homepage": "https://gitlab.com/vstore/vstore-server#README",
+  "bugs": {
+    "url": "https://gitlab.com/vstore/vstore-server/issues"
+  }
+}
