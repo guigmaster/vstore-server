@@ -2,6 +2,8 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 
+import httpRoutes from './http/routes'
+
 // Create new instance of Express
 const app = express()
 
@@ -13,5 +15,8 @@ app.use(bodyParser.json())
 const corsMiddleware = cors({ origin: '*', preflightContinue: true })
 app.use(corsMiddleware)
 app.options('*', corsMiddleware)
+
+// config API routes
+httpRoutes(app)
 
 export default app
