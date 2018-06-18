@@ -30,3 +30,11 @@ export const onError = (server, port) => {
     }
   }
 }
+
+export const onListening = server => {
+  return () => {
+    const addr = server.address()
+    const bind = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr.port}`
+    console.log(`Server running at ${bind}...`)
+  }
+}
