@@ -6,7 +6,7 @@
   "private": true,
   "author": "Guilherme Silva <guisilva.master@gmail.com>",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +21,8 @@
   "homepage": "https://gitlab.com/vstore/vstore-server#README",
   "bugs": {
     "url": "https://gitlab.com/vstore/vstore-server/issues"
+  },
+  "dependencies": {
+    "express": "4.16.3"
   }
 }
