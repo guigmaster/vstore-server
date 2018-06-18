@@ -17,6 +17,6 @@ app.use(corsMiddleware)
 app.options('*', corsMiddleware)
 
 // config API routes
-httpRoutes(app)
+require('./http/routes')(app)
 
 export default app
