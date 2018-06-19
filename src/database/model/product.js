@@ -39,7 +39,18 @@ export default connection => {
           if (error) {
             reject(error)
           }
-          resolve({ product: results })
+          resolve({ products: results })
+        })
+      })
+    },
+    getById: (id) => {
+      return new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM ${table} WHERE pro_id = ?`, [id], (error, results) => {
+          if (error) {
+            reject(error)
+          }
+
+          resolve({ product: results[0] })
         })
       })
     },
