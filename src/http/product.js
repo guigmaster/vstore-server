@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import multer from 'multer'
+import del from 'del'
 import { check, validationResult } from 'express-validator/check'
 
 import db from '../database'
@@ -46,6 +47,12 @@ router.get('/', async (req, res) => {
   }
 })
 
+const removeFilesOnFails = req => {
+  if (req.file && req.file.fieldname) {
+    del.sync(req.file.path)
+  }
+}
+
 const createValidators = [
 
   check('pro_name')
@@ -65,6 +72,7 @@ router.post('/', upload.single('pro_image'), createValidators, async (req, res) 
   // Finds the validation errors in this request and wraps them in an object with handy functions
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
+    removeFilesOnFails(req)
     return res.status(422).json({ errors: errors.array() })
   }
 
@@ -76,6 +84,7 @@ router.post('/', upload.single('pro_image'), createValidators, async (req, res) 
     const products = await db.product.create(payload)
     res.status(200).json(products)
   } catch (error) {
+    removeFilesOnFails(req)
     res.send(error)
   }
 })
