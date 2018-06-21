@@ -1,8 +1,10 @@
 import { Router } from 'express'
 import multer from 'multer'
+import { check, validationResult } from 'express-validator/check'
+
 import db from '../database'
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './uploads/')
   },
@@ -44,9 +46,33 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', upload.single('pro_image'), async (req, res) => {
+const createValidators = [
+
+  check('pro_name')
+    .exists().withMessage('Field is required')
+    .isString().withMessage('must be a string'),
+
+  check('pro_quantity')
+    .exists().withMessage('Field is required')
+    .isInt().withMessage('must be a integer'),
+
+  check('pro_price')
+    .exists().withMessage('Field is required')
+    .isDecimal().withMessage('must be a decimal number')
+]
+
+router.post('/', upload.single('pro_image'), createValidators, async (req, res) => {
+  // Finds the validation errors in this request and wraps them in an object with handy functions
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
+
   try {
-    const payload = Object.assign({}, req.body, { [req.file.fieldname]: req.file.path })
+    let payload = Object.assign({}, req.body)
+    if (req.file && req.file.fieldname) {
+      payload = Object.assign(payload, { [req.file.fieldname]: req.file.path })
+    }
     const products = await db.product.create(payload)
     res.status(200).json(products)
   } catch (error) {
