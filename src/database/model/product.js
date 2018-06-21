@@ -5,7 +5,8 @@ const fields = [
   'pro_name',
   'pro_description',
   'pro_price',
-  'pro_quantity'
+  'pro_quantity',
+  'pro_image'
 ]
 
 const getSqlFieldsValues = params => {

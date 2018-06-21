@@ -1,5 +1,37 @@
 import { Router } from 'express'
+import multer from 'multer'
 import db from '../database'
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname.toLowerCase()}`)
+  }
+})
+
+const fileFilter = (req, file, cb) => {
+  const types = [
+    'image/jpg',
+    'image/jpeg',
+    'image/png'
+  ]
+
+  if (types.indexOf(file.mimetype) !== -1) {
+    cb(null, true)
+  } else {
+    cb(null, false)
+  }
+}
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter
+})
 
 const router = Router()
 
@@ -12,9 +44,10 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', upload.single('pro_image'), async (req, res) => {
   try {
-    const products = await db.product.create(req.body)
+    const payload = Object.assign({}, req.body, { [req.file.fieldname]: req.file.path })
+    const products = await db.product.create(payload)
     res.status(200).json(products)
   } catch (error) {
     res.send(error)
@@ -30,9 +63,10 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', upload.single('pro_image'), async (req, res) => {
   try {
-    const product = await db.product.update(Number(req.params.id), req.body)
+    const payload = Object.assign({}, req.body, { [req.file.fieldname]: req.file.path })
+    const product = await db.product.update(Number(req.params.id), payload)
     res.status(200).json(product)
   } catch (error) {
     res.send(error)

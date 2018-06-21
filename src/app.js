@@ -16,6 +16,9 @@ const corsMiddleware = cors({ origin: '*', preflightContinue: true })
 app.use(corsMiddleware)
 app.options('*', corsMiddleware)
 
+// server uploads statics file using express.static
+app.use('/uploads', express.static('uploads'))
+
 // config API routes
 require('./http/routes')(app)
 
