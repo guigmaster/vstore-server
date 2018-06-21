@@ -75,7 +75,6 @@ router.post('/', upload.single('pro_image'), createValidators, async (req, res) 
     removeFilesOnFails(req)
     return res.status(422).json({ errors: errors.array() })
   }
-
   try {
     let payload = Object.assign({}, req.body)
     if (req.file && req.file.fieldname) {
@@ -98,17 +97,56 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-router.put('/:id', upload.single('pro_image'), async (req, res) => {
+const updateValidators = [
+  check('id')
+    .exists().withMessage('Parameter id is required')
+    .isInt().withMessage('must be a integer'),
+
+  check('pro_name')
+    .optional({ checkFalsy: true })
+    .exists().withMessage('Field is required')
+    .isString().withMessage('must be a string'),
+
+  check('pro_quantity')
+    .optional({ checkFalsy: true })
+    .exists().withMessage('Field is required')
+    .isInt().withMessage('must be a integer'),
+
+  check('pro_price')
+    .optional({ checkFalsy: true })
+    .exists().withMessage('Field is required')
+    .isDecimal().withMessage('must be a decimal number')
+]
+router.put('/:id', upload.single('pro_image'), updateValidators, async (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    removeFilesOnFails(req)
+    return res.status(422).json({ errors: errors.array() })
+  }
   try {
-    const payload = Object.assign({}, req.body, { [req.file.fieldname]: req.file.path })
+    let payload = Object.assign({}, req.body)
+    if (req.file && req.file.fieldname) {
+      payload = Object.assign(payload, { [req.file.fieldname]: req.file.path })
+    }
     const product = await db.product.update(Number(req.params.id), payload)
     res.status(200).json(product)
   } catch (error) {
+    removeFilesOnFails(req)
     res.send(error)
   }
 })
 
-router.delete('/:id', async (req, res) => {
+const removeProduct = [
+  check('id')
+    .exists().withMessage('Parameter id is required')
+    .isInt().withMessage('must be a integer')
+]
+router.delete('/:id', removeProduct, async (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    removeFilesOnFails(req)
+    return res.status(422).json({ errors: errors.array() })
+  }
   try {
     const product = await db.product.remove(Number(req.params.id))
     res.status(200).json(product)
