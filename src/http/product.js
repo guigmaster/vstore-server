@@ -87,8 +87,12 @@ router.post('/', upload.single('pro_image'), createValidators, async (req, res) 
     res.send(error)
   }
 })
-
-router.get('/:id', async (req, res) => {
+const getProduct = [
+  check('id')
+    .exists().withMessage('Parameter id is required')
+    .isInt().withMessage('must be a integer')
+]
+router.get('/:id', getProduct, async (req, res) => {
   try {
     const product = await db.product.getById(Number(req.params.id))
     res.status(200).json(product)
