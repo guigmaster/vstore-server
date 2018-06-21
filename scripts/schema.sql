@@ -1,8 +1,8 @@
--- MySQL dump 10.16  Distrib 10.3.6-MariaDB, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.16  Distrib 10.3.7-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: vstore__development
 -- ------------------------------------------------------
--- Server version	10.3.6-MariaDB-1:10.3.6+maria~sid-log
+-- Server version	10.3.7-MariaDB-1:10.3.7+maria~sid-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -36,6 +36,7 @@ CREATE TABLE `pro_products` (
   `pro_description` text DEFAULT NULL,
   `pro_price` double(10,2) NOT NULL,
   `pro_quantity` int(11) NOT NULL,
+  `pro_image` varchar(255) DEFAULT NULL,
   `pro_created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `pro_updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`pro_id`)
@@ -52,4 +53,4 @@ CREATE TABLE `pro_products` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-18 18:05:53
+-- Dump completed on 2018-06-21 15:21:02
