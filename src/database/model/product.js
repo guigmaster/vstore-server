@@ -62,7 +62,8 @@ export default connection => {
             pro_name,
             COALESCE(pro_description, '') as pro_description,
             pro_quantity,
-            pro_price
+            pro_price,
+            pro_image
           FROM ${table}
           WHERE pro_id = ?
           LIMIT 1

@@ -47,9 +47,9 @@ router.get('/', async (req, res) => {
   }
 })
 
-const removeFilesOnFails = req => {
-  if (req.file && req.file.fieldname) {
-    del.sync(req.file.path)
+const removeFiles = path => {
+  if (path) {
+    del.sync(path)
   }
 }
 
@@ -72,7 +72,7 @@ router.post('/', upload.single('pro_image'), createValidators, async (req, res) 
   // Finds the validation errors in this request and wraps them in an object with handy functions
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    removeFilesOnFails(req)
+    removeFiles(req.file && req.file.fieldname ? req.file.path : null)
     return res.status(422).json({ errors: errors.array() })
   }
   try {
@@ -83,7 +83,7 @@ router.post('/', upload.single('pro_image'), createValidators, async (req, res) 
     const products = await db.product.create(payload)
     res.status(201).json(products)
   } catch (error) {
-    removeFilesOnFails(req)
+    removeFiles(req.file && req.file.fieldname ? req.file.path : null)
     res.send(error)
   }
 })
@@ -94,8 +94,9 @@ const getProduct = [
 ]
 router.get('/:id', getProduct, async (req, res) => {
   try {
-    const product = await db.product.getById(Number(req.params.id))
-    res.status(200).json(product)
+    const result = await db.product.getById(Number(req.params.id))
+    delete result.product.pro_image
+    res.status(200).json(result)
   } catch (error) {
     res.send(error)
   }
@@ -124,7 +125,7 @@ const updateValidators = [
 router.put('/:id', upload.single('pro_image'), updateValidators, async (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    removeFilesOnFails(req)
+    removeFiles(req.file && req.file.fieldname ? req.file.path : null)
     return res.status(422).json({ errors: errors.array() })
   }
   try {
@@ -135,7 +136,7 @@ router.put('/:id', upload.single('pro_image'), updateValidators, async (req, res
     const product = await db.product.update(Number(req.params.id), payload)
     res.status(202).json(product)
   } catch (error) {
-    removeFilesOnFails(req)
+    removeFiles(req.file && req.file.fieldname ? req.file.path : null)
     res.send(error)
   }
 })
@@ -148,10 +149,12 @@ const removeProduct = [
 router.delete('/:id', removeProduct, async (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    removeFilesOnFails(req)
+    removeFiles(req.file && req.file.fieldname ? req.file.path : null)
     return res.status(422).json({ errors: errors.array() })
   }
   try {
+    const result = await db.product.getById(Number(req.params.id))
+    removeFiles(result.product.pro_image)
     const product = await db.product.remove(Number(req.params.id))
     res.status(202).json(product)
   } catch (error) {
