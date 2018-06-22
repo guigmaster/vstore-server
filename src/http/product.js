@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-const removeFilesOnFails = path => {
+const removeFiles = path => {
   if (path) {
     del.sync(path)
   }
@@ -72,7 +72,7 @@ router.post('/', upload.single('pro_image'), createValidators, async (req, res) 
   // Finds the validation errors in this request and wraps them in an object with handy functions
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    removeFilesOnFails(req.file && req.file.fieldname ? req.file.path : null)
+    removeFiles(req.file && req.file.fieldname ? req.file.path : null)
     return res.status(422).json({ errors: errors.array() })
   }
   try {
@@ -83,7 +83,7 @@ router.post('/', upload.single('pro_image'), createValidators, async (req, res) 
     const products = await db.product.create(payload)
     res.status(201).json(products)
   } catch (error) {
-    removeFilesOnFails(req.file && req.file.fieldname ? req.file.path : null)
+    removeFiles(req.file && req.file.fieldname ? req.file.path : null)
     res.send(error)
   }
 })
@@ -124,7 +124,7 @@ const updateValidators = [
 router.put('/:id', upload.single('pro_image'), updateValidators, async (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    removeFilesOnFails(req.file && req.file.fieldname ? req.file.path : null)
+    removeFiles(req.file && req.file.fieldname ? req.file.path : null)
     return res.status(422).json({ errors: errors.array() })
   }
   try {
@@ -135,7 +135,7 @@ router.put('/:id', upload.single('pro_image'), updateValidators, async (req, res
     const product = await db.product.update(Number(req.params.id), payload)
     res.status(202).json(product)
   } catch (error) {
-    removeFilesOnFails(req.file && req.file.fieldname ? req.file.path : null)
+    removeFiles(req.file && req.file.fieldname ? req.file.path : null)
     res.send(error)
   }
 })
@@ -148,7 +148,7 @@ const removeProduct = [
 router.delete('/:id', removeProduct, async (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    removeFilesOnFails(req.file && req.file.fieldname ? req.file.path : null)
+    removeFiles(req.file && req.file.fieldname ? req.file.path : null)
     return res.status(422).json({ errors: errors.array() })
   }
   try {
