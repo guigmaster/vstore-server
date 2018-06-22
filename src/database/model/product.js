@@ -36,7 +36,17 @@ export default connection => {
   return {
     all: () => {
       return new Promise((resolve, reject) => {
-        connection.query(`SELECT * FROM ${table}`, (error, results) => {
+        const query = `
+          SELECT
+            pro_id,
+            pro_name,
+            COALESCE(pro_description, '') as pro_description,
+            pro_quantity,
+            pro_price,
+            pro_image
+          FROM ${table}
+        `
+        connection.query(query, (error, results) => {
           if (error) {
             reject(error)
           }
@@ -46,7 +56,18 @@ export default connection => {
     },
     getById: (id) => {
       return new Promise((resolve, reject) => {
-        connection.query(`SELECT * FROM ${table} WHERE pro_id = ?`, [id], (error, results) => {
+        const query = `
+          SELECT
+            pro_id,
+            pro_name,
+            COALESCE(pro_description, '') as pro_description,
+            pro_quantity,
+            pro_price
+          FROM ${table}
+          WHERE pro_id = ?
+          LIMIT 1
+        `
+        connection.query(query, [id], (error, results) => {
           if (error) {
             reject(error)
           }
