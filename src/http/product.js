@@ -153,7 +153,7 @@ router.delete('/:id', removeProduct, async (req, res) => {
   }
   try {
     const product = await db.product.remove(Number(req.params.id))
-    res.status(200).json(product)
+    res.status(204).json(product)
   } catch (error) {
     res.send(error)
   }
