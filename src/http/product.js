@@ -133,7 +133,7 @@ router.put('/:id', upload.single('pro_image'), updateValidators, async (req, res
       payload = Object.assign(payload, { [req.file.fieldname]: req.file.path })
     }
     const product = await db.product.update(Number(req.params.id), payload)
-    res.status(200).json(product)
+    res.status(202).json(product)
   } catch (error) {
     removeFilesOnFails(req)
     res.send(error)
