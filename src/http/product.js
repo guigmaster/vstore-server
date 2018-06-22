@@ -94,8 +94,9 @@ const getProduct = [
 ]
 router.get('/:id', getProduct, async (req, res) => {
   try {
-    const product = await db.product.getById(Number(req.params.id))
-    res.status(200).json(product)
+    const result = await db.product.getById(Number(req.params.id))
+    delete result.product.pro_image
+    res.status(200).json(result)
   } catch (error) {
     res.send(error)
   }
@@ -152,6 +153,8 @@ router.delete('/:id', removeProduct, async (req, res) => {
     return res.status(422).json({ errors: errors.array() })
   }
   try {
+    const result = await db.product.getById(Number(req.params.id))
+    removeFiles(result.product.pro_image)
     const product = await db.product.remove(Number(req.params.id))
     res.status(202).json(product)
   } catch (error) {
